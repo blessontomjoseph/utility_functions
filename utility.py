@@ -40,3 +40,40 @@ def elliptic_envelope(data,plot=False,features=None):
         sns.scatterplot(data=data,x=features[0],y=features[1]);
         sns.scatterplot(x=outlier__val_feat_1, y=outlier_val_feat_2, color='r');
     return outlier_index
+
+
+
+
+from sklearn.ensemble import IsolationForest
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+
+
+iforest = IsolationForest(n_estimators=100, max_samples='auto', 
+                          contamination=0.05, max_features=1.0, 
+                          bootstrap=False, n_jobs=-1, random_state=1)
+
+def isolation_forest(data,iforest)
+    # iforest in an instance of isolation_forest
+    # Returns 1 of inliers, -1 for outliers
+    pred = iforest.fit_predict(data)
+    outlier_index = np.where(pred==-1)
+    outlier_values = data[outlier_index]
+    return outlier_index,outlier_values
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
