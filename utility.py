@@ -1,3 +1,8 @@
+import scipy
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 def diagnostic_plots(df, variable):
     # function to plot a histogram and a Q-Q plot
     # side by side, for a certain variable
