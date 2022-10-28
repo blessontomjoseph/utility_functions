@@ -5,14 +5,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style("darkgrid")
 
-from sklearn.covariance import EllipticEnvelope
-
-
 
 def qq_plot(df, variable):
     # function to plot a histogram and a Q-Q plot
     # side by side, for a certain variable
-    
     plt.figure(figsize=(15,6))
     plt.subplot(1, 2, 1)
     df[variable].hist()
@@ -21,17 +17,25 @@ def qq_plot(df, variable):
     plt.show()
     
     
+    
+    
+    
+# all the below algorithms return 1 for inliers and -1 for outliers
 
-def elliptic_envelope(data,plot=False,features=None):
+
+
+
+# elliptic envelope initialization
+from sklearn.covariance import EllipticEnvelope
+elpenv = EllipticEnvelope(contamination=0.025, random_state=1)
+
+def elliptic_envelope(data,plot=False,features=None,elpenv):
 #outlier detection using elliptic envelope algorithm
 #input is all the columns of the data wea look at the outliers as a whole in here
 # if plot=True max-2 features to be given as a list
 
-    elpenv = EllipticEnvelope(contamination=0.025, random_state=1)
-    # Returns 1 of inliers, -1 for outliers
     elpenv.fit(data)
     preds=elpenv.predict(data)
-    # Extract outliers
     outlier_index = np.where(pred==-1)
    
     if plot:
@@ -44,12 +48,8 @@ def elliptic_envelope(data,plot=False,features=None):
 
 
 
+# isolation_forest initialization referance
 from sklearn.ensemble import IsolationForest
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
-
-
-
 iforest = IsolationForest(n_estimators=100, max_samples='auto', 
                           contamination=0.05, max_features=1.0, 
                           bootstrap=False, n_jobs=-1, random_state=1)
@@ -64,6 +64,31 @@ def isolation_forest(data,iforest)
 
 
 
+
+# lof initialization referance
+from sklearn.neighbors import LocalOutlierFactor
+lof = LocalOutlierFactor(n_neighbors=20, algorithm='auto',
+                         metric='minkowski', contamination=0.04,
+                         novelty=False, n_jobs=-1)
+
+class Lof:
+    def __init__(self,data,lof):
+        self.lof=lof
+        self.data=data
+        
+    def outlier(self):
+        pred = self.lof.fit_predict(self.data)
+        outlier_index = np.where(pred==-1)
+        outlier_values = data.iloc[outlier_index]
+        return outlier_index,outlier_values
+    
+    def novalty(self,val_data):
+        self.lof.fit(self.data)
+        preds=self.lof.predict(val_data)
+        outlier_index = np.where(pred==-1)
+        outlier_values = val_data.iloc[outlier_index]
+        return outlier_index,outlier_values
+    
 
 
 
